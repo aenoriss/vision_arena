@@ -1,23 +1,4 @@
-# Root project folder name needs to be included
-/[Ll]ibrary/
-/[Tt]emp/
-/[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
-/[Ll]ogs/
-/[Uu]ser[Ss]ettings/
-/[Pp]ackages/
-/[Pp]rojectSettings/
-/.vs/
-/.vscode/
-/.idea/
-/.gradle/
-
-# Oculus assets and their meta files
-/[Aa]ssets/Oculus/**
-/[Aa]ssets/Oculus.meta
-
-# Other pac# This .gitignore file should be placed at the root of your Unity project directory
+# This .gitignore file should be placed at the root of your Unity project directory
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
@@ -90,3 +71,4 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+/Assets/Oculus/Avatar2_SampleAssets/
