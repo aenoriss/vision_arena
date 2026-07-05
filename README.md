@@ -1,10 +1,10 @@
 # Vision Arena
 
-A mixed-reality stadium experience for Meta Quest. You drop a soccer ball onto your real table and a live digital twin of a match spawns on top of it, which you inspect and control with your hands. I built this during my Spatial Computing work at Globant (Sportian), reimagining what a VIP stadium seat could feel like when the field is sitting on the table in front of you.
+A mixed-reality stadium experience for Meta Quest. Drop a soccer ball onto your real table and a live digital twin of a match spawns on top of it. You then inspect and steer it with your hands. I built it during my Spatial Computing work at Globant (Sportian), chasing one idea: what a VIP stadium seat could feel like with the whole field sitting on the table in front of you.
 
 ## The idea
 
-A stadium seat gives you one viewpoint. The bet here is that a headset can give you the whole field as an object you hold: a tabletop digital twin you can walk around, reach into, and re-angle, with the match playing out at miniature scale. The demo is set up around two clubs (Real Madrid and Atletico Madrid), a soccer pitch, and running player models, all placed on a real surface in your room.
+A stadium seat gives you one fixed viewpoint. The bet here is that a headset can hand you the whole field as an object you hold. A tabletop digital twin you can walk around, reach into, and re-angle, with the match playing out at miniature scale. The demo is built around two clubs (Real Madrid and Atletico Madrid), a soccer pitch, and running player models, all sitting on a real surface in your room.
 
 ## What it does
 
@@ -29,15 +29,15 @@ flowchart TD
 
 ### Gesture recognition
 
-Meta's SDK tells you when a pose like a pinch is happening. It does not tell you that the hand swiped. `ActionManager` builds directional gestures on top of the raw pose events by watching the hand transform over time. When a pinch starts it records the position and the clock, but a swipe only counts after the pinch has been held for half a second (`PINCH_VALIDATION_TIME`), and then only if the hand moves past a 0.15 unit threshold within a two-second window. The validation delay is the interesting part: without it, the small hand drift while your fingers are still closing into the pinch reads as a swipe, so the half-second hold is what makes the gesture deliberate. The same displacement-over-time idea drives the grab-pull on the z axis, the thumbs-up push, and the L-gesture zoom.
+Meta's SDK tells you when a pose like a pinch is happening. It does not tell you the hand swiped. `ActionManager` fills that gap. It builds directional gestures by watching the hand transform move over time. When a pinch starts, it records the position and the clock. A swipe only counts once the pinch has been held for half a second (`PINCH_VALIDATION_TIME`), and then only if the hand travels past a 0.15 unit threshold inside a two-second window. That validation delay is the interesting part. While your fingers are still closing into the pinch, the hand drifts a little, and that drift reads as a swipe if you let it. The half-second hold is what makes the gesture deliberate. The same displacement-over-time trick drives the grab-pull on the z axis, the thumbs-up push, and the L-gesture zoom.
 
 ### Anchoring on a real table
 
-`TableCenterSpawnPositions` uses MR Utility Kit to place the twin on real furniture instead of in mid-air. It registers a callback for when the room scan loads, filters the scene anchors down to ones labeled TABLE, takes each table's plane-rect center, and converts it to world space. Before spawning, it lifts the object by half its own height so it rests on the surface instead of clipping through, aligns rotation to the table's normal, and runs a `Physics.CheckBox` to skip spots where something already is. That is what makes the stadium feel like it is actually on your table and not floating near it.
+`TableCenterSpawnPositions` uses MR Utility Kit to land the twin on real furniture. It registers a callback for when the room scan loads, then filters the scene anchors down to the ones labeled TABLE. For each table it takes the plane-rect center and converts it to world space. Before spawning, it lifts the object by half its own height so it rests on the surface cleanly, aligns rotation to the table's normal, and runs a `Physics.CheckBox` to skip spots that are already occupied. That last bit of care is what makes the stadium feel like it is genuinely sitting on your table.
 
 ### A note on multiplayer
 
-The project is set up for shared sessions (Netcode for GameObjects, Unity Relay and Lobby, the multiplayer tools, and ParrelSync for testing several client instances from one machine), but the gameplay scripts in the repo are the single-user MR interaction pieces. I am flagging that honestly: the networking stack is wired into the project, the co-located multiplayer gameplay is not in this codebase.
+The project is wired for shared sessions: Netcode for GameObjects, Unity Relay and Lobby, the multiplayer tools, and ParrelSync for running several client instances from one machine. The gameplay scripts here, though, are the single-user MR interaction pieces. So to be straight about scope: the networking stack is set up, and the co-located multiplayer gameplay has not been built into this codebase yet.
 
 ## Tech stack
 
