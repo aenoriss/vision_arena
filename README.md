@@ -4,7 +4,7 @@ A mixed-reality stadium experience for Meta Quest. Drop a soccer ball onto your 
 
 ## The idea
 
-A stadium seat gives you one fixed viewpoint. The bet here is that a headset can hand you the whole field as an object you hold. A tabletop digital twin you can walk around, reach into, and re-angle, with the match playing out at miniature scale. The demo is built around two clubs (Real Madrid and Atletico Madrid), a soccer pitch, and running player models, all staged on a real surface in your room.
+A stadium seat gives you one fixed viewpoint. A headset can hand you the whole field as an object you hold: a tabletop digital twin you can walk around, reach into, and re-angle, with the match playing out at miniature scale. The demo is built around two clubs (Real Madrid and Atletico Madrid), a soccer pitch, and running player models, all staged on a real surface in your room.
 
 ## What it does
 
@@ -29,19 +29,19 @@ flowchart TD
 
 ### Gesture recognition
 
-Meta's SDK tells you when a pose like a pinch is happening. It does not tell you the hand swiped. `ActionManager` fills that gap. It builds directional gestures by watching the hand transform move over time. When a pinch starts, it records the position and the clock. A swipe only counts once the pinch has been held for half a second (`PINCH_VALIDATION_TIME`), and then only if the hand travels past a 0.15 unit threshold inside a two-second window. That validation delay is the interesting part. While your fingers are still closing into the pinch, the hand drifts a little, and that drift reads as a swipe if you let it. The half-second hold is what makes the gesture deliberate. The same displacement-over-time trick drives the grab-pull on the z axis, the thumbs-up push, and the L-gesture zoom.
+Meta's SDK tells you when a pose like a pinch is happening. It does not tell you the hand swiped. `ActionManager` fills that gap. It builds directional gestures by watching the hand transform move over time. When a pinch starts, it records the position and the clock. A swipe only counts once the pinch has been held for half a second (`PINCH_VALIDATION_TIME`), and then only if the hand travels past a 0.15 unit threshold inside a two-second window. Without that hold, the drift while your fingers are still closing into the pinch would register as a swipe. The same displacement-over-time trick drives the grab-pull on the z axis, the thumbs-up push, and the L-gesture zoom.
 
 ### Anchoring on a real table
 
-`TableCenterSpawnPositions` uses MR Utility Kit to land the twin on real furniture. It registers a callback for when the room scan loads, then filters the scene anchors down to the ones labeled TABLE. For each table it takes the plane-rect center and converts it to world space. Before spawning, it lifts the object by half its own height so it rests on the surface cleanly, aligns rotation to the table's normal, and runs a `Physics.CheckBox` to skip spots that are already occupied. That last bit of care is what makes the stadium feel like it is genuinely sitting on your table.
+`TableCenterSpawnPositions` uses MR Utility Kit to land the twin on real furniture. It registers a callback for when the room scan loads, then filters the scene anchors down to the ones labeled TABLE. For each table it takes the plane-rect center and converts it to world space. Before spawning, it lifts the object by half its own height so it rests on the surface cleanly, aligns rotation to the table's normal, and runs a `Physics.CheckBox` to skip spots that are already occupied.
 
 ### The ball drop
 
-The "drop the ball" gesture runs on a little constrained-physics trick. `SpawnMarkerManager` pins the ball's x and z every frame, so you can only push it straight down, and it caps the height so the ball never rises above its resting spot. Push it past the trigger surface underneath and the twin spawns. Let go partway and it eases back up, climbing faster the farther it fell. The trigger is wired at runtime: on Start the manager adds a `TriggerCollisionDetector` to the surface and hands it the ball to watch.
+`SpawnMarkerManager` pins the ball's x and z every frame, so you can only push it straight down, and caps the height so it never rises above its resting spot. Push it past the trigger surface underneath and the twin spawns. Let go partway and it eases back up, climbing faster the farther it fell. The trigger is wired at runtime: on Start the manager adds a `TriggerCollisionDetector` to the surface and hands it the ball to watch.
 
 ### A note on multiplayer
 
-The project is wired for shared sessions: Netcode for GameObjects, Unity Relay and Lobby, the multiplayer tools, and ParrelSync for running several client instances from one machine. The gameplay scripts here, though, are the single-user MR interaction pieces. So to be straight about scope: the networking stack is set up, and the co-located multiplayer gameplay has not been built into this codebase yet.
+The project is wired for shared sessions: Netcode for GameObjects, Unity Relay and Lobby, the multiplayer tools, and ParrelSync for running several client instances from one machine. The gameplay scripts here, though, are the single-user MR interaction pieces. The networking stack is in place; the co-located multiplayer gameplay is not built yet.
 
 ## Tech stack
 
