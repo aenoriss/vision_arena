@@ -4,7 +4,7 @@ A mixed-reality stadium experience for Meta Quest. Drop a soccer ball onto your 
 
 ## The idea
 
-A stadium seat gives you one fixed viewpoint. The bet here is that a headset can hand you the whole field as an object you hold. A tabletop digital twin you can walk around, reach into, and re-angle, with the match playing out at miniature scale. The demo is built around two clubs (Real Madrid and Atletico Madrid), a soccer pitch, and running player models, all sitting on a real surface in your room.
+A stadium seat gives you one fixed viewpoint. The bet here is that a headset can hand you the whole field as an object you hold. A tabletop digital twin you can walk around, reach into, and re-angle, with the match playing out at miniature scale. The demo is built around two clubs (Real Madrid and Atletico Madrid), a soccer pitch, and running player models, all staged on a real surface in your room.
 
 ## What it does
 
@@ -34,6 +34,10 @@ Meta's SDK tells you when a pose like a pinch is happening. It does not tell you
 ### Anchoring on a real table
 
 `TableCenterSpawnPositions` uses MR Utility Kit to land the twin on real furniture. It registers a callback for when the room scan loads, then filters the scene anchors down to the ones labeled TABLE. For each table it takes the plane-rect center and converts it to world space. Before spawning, it lifts the object by half its own height so it rests on the surface cleanly, aligns rotation to the table's normal, and runs a `Physics.CheckBox` to skip spots that are already occupied. That last bit of care is what makes the stadium feel like it is genuinely sitting on your table.
+
+### The ball drop
+
+The "drop the ball" gesture runs on a little constrained-physics trick. `SpawnMarkerManager` pins the ball's x and z every frame, so you can only push it straight down, and it caps the height so the ball never rises above its resting spot. Push it past the trigger surface underneath and the twin spawns. Let go partway and it eases back up, climbing faster the farther it fell. The trigger is wired at runtime: on Start the manager adds a `TriggerCollisionDetector` to the surface and hands it the ball to watch.
 
 ### A note on multiplayer
 
