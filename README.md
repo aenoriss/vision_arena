@@ -1,4 +1,4 @@
-<img src="assets/header.webp" alt="Vision Arena" width="400">
+<img src="assets/header.webp" alt="Vision Arena" width="100%">
 
 # Vision Arena
 
