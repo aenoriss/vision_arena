@@ -1,3 +1,5 @@
+<img src="assets/header.webp" alt="Vision Arena" width="400">
+
 # Vision Arena
 
 A mixed-reality stadium experience for Meta Quest. Drop a soccer ball onto your real table and a live digital twin of a match spawns on top of it. You then inspect and steer it with your hands. I built it during my Spatial Computing work at Globant (Sportian), chasing one idea: what a VIP stadium seat could feel like with the whole field sitting on the table in front of you.
